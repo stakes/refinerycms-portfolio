@@ -1,9 +1,7 @@
 var portfolio_entry_url = null;
 
 reset_functionality = function(el) {
-	
-	console.log('reset_functionality('+el+')')
-	
+		
   $(el).sortable({
     'tolerance': 'pointer'
     , 'placeholder': 'placeholder'
@@ -39,7 +37,6 @@ reset_functionality = function(el) {
 	          img_delete = $("<img src='/images/refinery/icons/delete.png' width='16' height='16' />");
 	          img_delete.appendTo(resource_actions);
 	          img_delete.click(function() {
-							console.log($(this).parents('li[id*=resource_]'));
 	            $(this).parents('li[id*=resource_]').remove();
 	            reindex('#portfolio_resources');
 	          });
@@ -58,9 +55,6 @@ reset_functionality = function(el) {
 
 reindex = function(el) {
 	
-	console.log('REINDEX!!!! -----------------------------------------');
-	console.log(el)
-	
   $(el+' li input:hidden').each(function(i, input){
     // make the image's name consistent with its position.
     parts = $(input).attr('name').split(']');
@@ -74,32 +68,25 @@ reindex = function(el) {
 
 resource_added = function(resource) {
 
-	console.log('resource_added ------------------------------------------');
-
   last_portfolio_entry_resource_id = "";
   new_list_item = (current_list_item = $('#portfolio_resources li.empty')).clone();
   resource_id = $(resource).attr('id').replace('resource_', '');
+	current_list_item.addClass('clearfix record');
   current_list_item.find('input:hidden').val(resource_id);
 
-	console.log(resource)
-
   if($('meta[refinerycms]').attr('refinerycms') >= '0.9.9') {
-		var add = $('<li class="clearfix record">\
-		  <span class="title psd">\
+		var add = $('<span class="title psd">\
 		    '+$(resource).attr('html')+'\
-		  </span>\
-		</li>');
+		  </span>');
     add.appendTo(current_list_item);
   } else {
     $.ajax({
       async: false,
       url: '/refinery/resources/'+resource_id+'/url',
       success: function (result, status, xhr) {
-				var add = $('<li class="clearfix record">\
-				  <span class="title psd">\
+				var add = $('<span class="title psd">\
 				    '+$(resource).attr('html')+'\
-				  </span>\
-				</li>');
+				  </span>');
 		    add.appendTo(current_list_item);
       }
     });
@@ -109,11 +96,12 @@ resource_added = function(resource) {
 
   new_list_item.appendTo($('#portfolio_resources'));
   reset_functionality('#portfolio_resources');
+
+	close_dialog();
 	
 }
 
 image_added = function(image) {
-	console.log('image_added ------------------------------------------');
 	
   last_portfolio_entry_image_id = "";
   new_list_item = (current_list_item = $('#portfolio_images li.empty')).clone();
