@@ -58,11 +58,14 @@
                         :id => "add_resource_link" %>
           </span>
         </div>
-        <div class='wym_box field resources_field'>
+        <div class='wym_box field resources_field files' id="records">
           <ul id='portfolio_resources' class='clearfix portfolio_entry_resources'>
             <%= f.fields_for :resources do |resource_form| %>
-              <li id='resource_<%= resource_form.object.id %>'>
+              <li id='resource_<%= resource_form.object.id %>' class="clearfix record">
                 <%= resource_form.hidden_field :id %>
+								  <span class="title <%= resource_form.object.ext %>">
+								    <%= resource_form.object.file_name %>
+								  </span>
               </li>
             <% end %>
             <li class='empty'>

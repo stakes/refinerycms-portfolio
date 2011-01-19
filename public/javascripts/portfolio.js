@@ -1,14 +1,16 @@
 var portfolio_entry_url = null;
 
 reset_functionality = function(el) {
+	
+	console.log('reset_functionality('+el+')')
+	
   $(el).sortable({
     'tolerance': 'pointer'
     , 'placeholder': 'placeholder'
     , 'cursor': 'drag'
     , 'items': 'li'
-    , stop: reindex(el)
+    , stop: function() { reindex(el) }
   });
-
 
   $('#content #portfolio_images li:not(.empty)').each(function(index, li) {
       $(this).hover(function(e){
@@ -37,6 +39,7 @@ reset_functionality = function(el) {
 	          img_delete = $("<img src='/images/refinery/icons/delete.png' width='16' height='16' />");
 	          img_delete.appendTo(resource_actions);
 	          img_delete.click(function() {
+							console.log($(this).parents('li[id*=resource_]'));
 	            $(this).parents('li[id*=resource_]').remove();
 	            reindex('#portfolio_resources');
 	          });
@@ -78,27 +81,26 @@ resource_added = function(resource) {
   resource_id = $(resource).attr('id').replace('resource_', '');
   current_list_item.find('input:hidden').val(resource_id);
 
-	console.log(resource_id)
+	console.log(resource)
 
   if($('meta[refinerycms]').attr('refinerycms') >= '0.9.9') {
-		var add = $('<li class="clearfix record on">\
-		  <span class="title kth">\
-		    Dolan.kth\
-		    <span class="preview">- 3.45 MB</span>\
+		var add = $('<li class="clearfix record">\
+		  <span class="title psd">\
+		    '+$(resource).attr('html')+'\
 		  </span>\
 		</li>');
     add.appendTo(current_list_item);
   } else {
     $.ajax({
       async: false,
-      url: '/refinery/resources/'+image_id+'/url',
-      data: {size: '135x135#c'},
+      url: '/refinery/resources/'+resource_id+'/url',
       success: function (result, status, xhr) {
-        (img = $("<img />")).attr({
-         title: $(resource).attr('title')
-         , alt: $(resource).attr('alt')
-         , src: result.url
-        }).appendTo(current_list_item);
+				var add = $('<li class="clearfix record">\
+				  <span class="title psd">\
+				    '+$(resource).attr('html')+'\
+				  </span>\
+				</li>');
+		    add.appendTo(current_list_item);
       }
     });
   }
@@ -145,8 +147,11 @@ image_added = function(image) {
 }
 
 $(document).ready(function() {
+
   $('h1#body_content_page_title').addClass('clearfix');
-  reset_functionality();
+
+  reset_functionality('#portfolio_images');
+	reset_functionality('#portfolio_resources');
 
   $("ul#portfolio_images li.other a img").fadeTo(0, 0.3);
 
