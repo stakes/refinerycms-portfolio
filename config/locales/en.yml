@@ -1,4 +1,8 @@
 en:
+  shared:
+    admin:
+      image_picker:
+        image: hero image
   plugins:
     portfolio:
       title: Portfolio
