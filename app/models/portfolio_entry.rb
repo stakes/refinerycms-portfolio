@@ -50,7 +50,7 @@ class PortfolioEntry < ActiveRecord::Base
   end
   
   def resource_names
-    self.resources.collect{|i| i.resource_name}
+    self.resources.collect{|i| i.file_name}
   end
 
   alias_attribute :content, :body

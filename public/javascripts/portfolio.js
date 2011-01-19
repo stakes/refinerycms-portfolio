@@ -1,41 +1,64 @@
 var portfolio_entry_url = null;
 
-reset_functionality = function() {
-	console.log('reset_functionality')
-	console.log($("#portfolio_images").length);
-  $("#portfolio_images").sortable({
+reset_functionality = function(el) {
+  $(el).sortable({
     'tolerance': 'pointer'
     , 'placeholder': 'placeholder'
     , 'cursor': 'drag'
     , 'items': 'li'
-    , stop: reindex_images
+    , stop: reindex(el)
   });
+
 
   $('#content #portfolio_images li:not(.empty)').each(function(index, li) {
-    $(this).hover(function(e){
-      if ((image_actions = $(this).find('.image_actions')).length == 0) {
-        image_actions = $("<div class='image_actions'></div>");
-        img_delete = $("<img src='/images/refinery/icons/delete.png' width='16' height='16' />");
-        img_delete.appendTo(image_actions);
-        img_delete.click(function() {
-          $(this).parents('li[id*=image_]').remove();
-          reindex_images();
-        });
-
-        image_actions.appendTo($(li));
-      }
-
-      image_actions.show();
-    }, function(e) {
-      $(this).find('.image_actions').hide();
+      $(this).hover(function(e){
+        if ((image_actions = $(this).find('.image_actions')).length == 0) {
+          image_actions = $("<div class='image_actions'></div>");
+          img_delete = $("<img src='/images/refinery/icons/delete.png' width='16' height='16' />");
+          img_delete.appendTo(image_actions);
+          img_delete.click(function() {
+            $(this).parents('li[id*=image_]').remove();
+            reindex('#portfolio_images');
+          });
+  
+          image_actions.appendTo($(li));
+        }
+  
+        image_actions.show();
+      }, function(e) {
+        $(this).find('.image_actions').hide();
+      });
     });
-  });
 
-  reindex_images();
+	  $('#content #portfolio_resources li:not(.empty)').each(function(index, li) {
+	      $(this).hover(function(e){
+	        if ((resource_actions = $(this).find('.resource_actions')).length == 0) {
+	          resource_actions = $("<div class='resource_actions'></div>");
+	          img_delete = $("<img src='/images/refinery/icons/delete.png' width='16' height='16' />");
+	          img_delete.appendTo(resource_actions);
+	          img_delete.click(function() {
+	            $(this).parents('li[id*=resource_]').remove();
+	            reindex('#portfolio_resources');
+	          });
+
+	          resource_actions.appendTo($(li));
+	        }
+
+	        resource_actions.show();
+	      }, function(e) {
+	        $(this).find('.resource_actions').hide();
+	      });
+	    });
+
+  reindex(el);
 }
 
-reindex_images = function() {
-  $('#portfolio_images li input:hidden').each(function(i, input){
+reindex = function(el) {
+	
+	console.log('REINDEX!!!! -----------------------------------------');
+	console.log(el)
+	
+  $(el+' li input:hidden').each(function(i, input){
     // make the image's name consistent with its position.
     parts = $(input).attr('name').split(']');
     parts[1] = ('[' + i)
@@ -46,8 +69,50 @@ reindex_images = function() {
   });
 }
 
+resource_added = function(resource) {
+
+	console.log('resource_added ------------------------------------------');
+
+  last_portfolio_entry_resource_id = "";
+  new_list_item = (current_list_item = $('#portfolio_resources li.empty')).clone();
+  resource_id = $(resource).attr('id').replace('resource_', '');
+  current_list_item.find('input:hidden').val(resource_id);
+
+	console.log(resource_id)
+
+  if($('meta[refinerycms]').attr('refinerycms') >= '0.9.9') {
+		var add = $('<li class="clearfix record on">\
+		  <span class="title kth">\
+		    Dolan.kth\
+		    <span class="preview">- 3.45 MB</span>\
+		  </span>\
+		</li>');
+    add.appendTo(current_list_item);
+  } else {
+    $.ajax({
+      async: false,
+      url: '/refinery/resources/'+image_id+'/url',
+      data: {size: '135x135#c'},
+      success: function (result, status, xhr) {
+        (img = $("<img />")).attr({
+         title: $(resource).attr('title')
+         , alt: $(resource).attr('alt')
+         , src: result.url
+        }).appendTo(current_list_item);
+      }
+    });
+  }
+
+  current_list_item.attr('id', 'resource_' + resource_id).removeClass('empty');
+
+  new_list_item.appendTo($('#portfolio_resources'));
+  reset_functionality('#portfolio_resources');
+	
+}
+
 image_added = function(image) {
-	console.log(image)
+	console.log('image_added ------------------------------------------');
+	
   last_portfolio_entry_image_id = "";
   new_list_item = (current_list_item = $('#portfolio_images li.empty')).clone();
   image_id = $(image).attr('id').replace('image_', '');
@@ -76,7 +141,7 @@ image_added = function(image) {
   current_list_item.attr('id', 'image_' + image_id).removeClass('empty');
 
   new_list_item.appendTo($('#portfolio_images'));
-  reset_functionality();
+  reset_functionality('#portfolio_images');
 }
 
 $(document).ready(function() {
