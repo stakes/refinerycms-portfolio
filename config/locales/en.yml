@@ -20,7 +20,9 @@ en:
       form:
         title: Title
         images: Images
+        resources: Files        
         add: Add
         add_another_image: "Add Another Image"
+        add_another_resource: "Add Another File"
         content: Content
         parent: Parent
