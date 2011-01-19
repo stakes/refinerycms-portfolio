@@ -31,10 +31,10 @@ reset_functionality = function(el) {
     });
 
 	  $('#content #portfolio_resources li:not(.empty)').each(function(index, li) {
-	      $(this).hover(function(e){
+
 	        if ((resource_actions = $(this).find('.resource_actions')).length == 0) {
-	          resource_actions = $("<div class='resource_actions'></div>");
-	          img_delete = $("<img src='/images/refinery/icons/delete.png' width='16' height='16' />");
+	          resource_actions = $("<span class='resource_actions actions'></span>");
+	          img_delete = $("<a href='#' class='cancel confirm-delete'><img src='/images/refinery/icons/delete.png' width='16' height='16' /></a>");
 	          img_delete.appendTo(resource_actions);
 	          img_delete.click(function() {
 	            $(this).parents('li[id*=resource_]').remove();
@@ -45,9 +45,7 @@ reset_functionality = function(el) {
 	        }
 
 	        resource_actions.show();
-	      }, function(e) {
-	        $(this).find('.resource_actions').hide();
-	      });
+
 	    });
 
   reindex(el);
