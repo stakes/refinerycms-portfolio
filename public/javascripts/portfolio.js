@@ -1,6 +1,8 @@
 var portfolio_entry_url = null;
 
 reset_functionality = function() {
+	console.log('reset_functionality')
+	console.log($("#portfolio_images").length);
   $("#portfolio_images").sortable({
     'tolerance': 'pointer'
     , 'placeholder': 'placeholder'
@@ -45,8 +47,9 @@ reindex_images = function() {
 }
 
 image_added = function(image) {
+	console.log(image)
   last_portfolio_entry_image_id = "";
-  new_list_item = (current_list_item = $('li.empty')).clone();
+  new_list_item = (current_list_item = $('#portfolio_images li.empty')).clone();
   image_id = $(image).attr('id').replace('image_', '');
   current_list_item.find('input:hidden').val(image_id);
   if($('meta[refinerycms]').attr('refinerycms') >= '0.9.9') {

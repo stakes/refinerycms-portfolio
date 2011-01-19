@@ -18,7 +18,7 @@
   </div>
   <% unless RefinerySetting.find_or_set(:portfolio_has_no_index, true)%>
     <div class='field'>
-      <%= f.label :image -%>
+      <%= f.label :image %>
       <%= render :partial => "/shared/admin/image_picker", :locals => {
         :f => f,
         :field => :title_image_id,
@@ -34,14 +34,44 @@
           <%= link_to t('.content'), '#page_part_content'%>
         </li>
         <li class='ui-state-default'>
+          <%= link_to t('.resources'), '#portfolio_resource_picker'%>
+        </li>
+        <li class='ui-state-default'>
           <%= link_to t('.images'), '#portfolio_image_picker'%>
         </li>
       </ul>
     </div>
     <div id='page_part_editors'>
+
       <div id='page_part_content' class='page_part'>
         <%= f.text_area :body, :class => "wymeditor widest", :rows => 7 %>
       </div>
+
+      <div class='page_part wym_skin_refinery' id='portfolio_resource_picker'>
+        <div class='wym_area_top'>
+          <span class='clearfix label_inline_with_link'>
+            <%= link_to t('.add_another_resource').html_safe,
+                        insert_admin_resources_url(:dialog => true,
+                                                :width => 866,
+                                                :height => 510,
+                                                :callback => "image_added"),
+                        :id => "add_resource_link" %>
+          </span>
+        </div>
+        <div class='wym_box field resources_field'>
+          <ul id='portfolio_resources' class='clearfix portfolio_entry_resources'>
+            <%= f.fields_for :resources do |resource_form| %>
+              <li id='resource_<%= resource_form.object.id %>'>
+                <%= resource_form.hidden_field :id %>
+              </li>
+            <% end %>
+            <li class='empty'>
+              <%= hidden_field_tag "portfolio_entry[resources_attributes][#{@portfolio_entry.resources.size}][id]" %>
+            </li>
+          </ul>
+        </div>
+      </div>
+
       <div class='page_part wym_skin_refinery' id='portfolio_image_picker'>
         <div class='wym_area_top'>
           <span class='clearfix label_inline_with_link'>
