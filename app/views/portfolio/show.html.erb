@@ -24,6 +24,13 @@
       </li>
     <% end %>
   </ul>
+  <ul id='portfolio_resources'>
+    <% @portfolio_entry.resources.each_with_index do |resource, index| %>
+      <li class="<%= cycle('odd', 'even') %> #{resource == params[:resource_id].to_i) ? 'selected' : 'other'}">
+        <%= link_to(resource.title, resource.url) %>
+      </li>
+    <% end %>
+  </ul>
 <% end %>
 
 <div class='portfolio'>
